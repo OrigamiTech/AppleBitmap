@@ -1,0 +1,24 @@
+This is a tool for encoding and decoding bitmap data in apple format.
+
+While browsing the filesystem of my iPod touch, I found a file in /var/mobile/Library/Caches/ called com.apple.SpringBoard.folderSwitcherLinen
+It didn't seem to be of a recognised or documented format; so, being a curious person, I opened it up in a hex editor. 
+I had a hunch that it would be the same image as /System/Library/CoreServices/SpringBoard.app/FolderSwitcherBG.png
+Armed with that file I set to work reverse-engineering it.
+By modifying /System/Library/CoreServices/SpringBoard.app/FolderSwitcherBG.png, and allowing the device to regenerate the cache copy,
+I was able to determine the purpose of some of the header entries.
+
+The header seems to consist of the following:
+
+HEADER:
+32-bit int: header size in bytes.
+32-bit int: image width in pixels.
+32-bit int: image height in pixels.
+32-bit int: image width in pixels multiplied by 4. Unknown purpose.
+32-bit int: constant 8 in all tests. Unknown purpose.
+32-bit int: constant 32 in all tests. Unknown purpose. Possibly bits-per-pixel.
+32-bit int: constant 8194 in all tests. Unknown purpose.
+The header is then padded with nulls until it matches the length specified earlier.
+
+After the header is the raw bitmap data in BGRA format.
+
+This probably doesn't have much (if any) practical use. I just made it because I was bored and curious.
